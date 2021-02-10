@@ -1,8 +1,13 @@
 import { ADD_HIST, CLEAR_HIST } from './historyTypes'
 
-export const addHistory = (result) => ({
+let nextId = 2
+
+export const addHistory = (equation) => ({
   type: ADD_HIST,
-  data: result
+  data: {
+    id: nextId++,
+    equation: equation
+  }
 })
 
 export const clearHistory = () => ({

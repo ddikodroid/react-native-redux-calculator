@@ -1,52 +1,104 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, SafeAreaView, View } from 'react-native'
-import { COLOR } from '../styles/Color'
-import { FONT, WIDTH } from '../styles/Dimension'
+import { Text, SafeAreaView, Alert, View, StyleSheet, Modal, TouchableOpacity, FlatList } from 'react-native'
 import CharacterButton from '../components/CharacterButton'
 import { evaluate } from 'mathjs'
+import { COLOR } from '../styles/Color'
+import { FONT, HEIGHT, WIDTH } from '../styles/Dimension'
+import { addHistory, clearHistory } from '../redux/actions/historyAction'
+import { useDispatch, useSelector } from 'react-redux'
 
 const MainScreen = () => {
-  const characters = ['AC', 'DEL', '%', '/', 7, 8, 9, '*',
+  // array of characters
+  const characters = ['AC', 'DEL', 'HIST', '/', 7, 8, 9, '*',
     4, 5, 6, '+', 1, 2, 3, '-', 0, '00', '.', '=']
 
+  // redux
+  const calcHist = useSelector(state => state.historyReducer.calculatorHist)
+  const dispatch = useDispatch()
+  // hooks
   const [equation, setEquation] = useState('')
-  const [result, setResult] = useState('')
+  const [result, setResult] = useState(null)
+  const [openHistModal, setOpenHistModal] = useState(false)
+
   const onClickChar = (nextChar) => {
-    setEquation([...equation, nextChar])
+    setEquation(`${equation}${nextChar}`)
   }
-  const onClickEqual = () => {
-    setResult(evaluate(equation))
+  const onClickEqual = (equation) => {
+    setResult(String(evaluate(equation)))
+    const res = `${equation}=${evaluate(equation)}`
+    dispatch((addHistory(res)))
+    Alert.alert(res)
+    // Alert.alert(`${equation}=${evaluate(equation)}`)
   }
   const onClickDelete = () => {
-    setEquation(equation.substring(0, equation.length() - 1))
+    setEquation(equation.slice(0, -1))
   }
   const onClickClear = () => {
     setEquation('')
+    setResult(null)
   }
-  // const checkSwitch = (char) => {
-  //   switch (char) {
-  //     case char === 'AC':
-  //       onClickClear()
-  //       break
-  //     case char === 'DEL':
-  //       onClickDelete()
-  //       break
-  //     case char === '=':
-  //       onClickEqual()
-  //       break
-  //     default:
-  //       onClickChar(char)
-  //       break
-  //   }
-  // }
+  const onClickClearHistory = () => {
+    dispatch(clearHistory())
+  }
+  const onClickHist = () => {
+    setOpenHistModal(!openHistModal)
+  }
+  const checkSwitch = (char, eq = equation, res = result) => {
+    switch (char) {
+      case 'AC':
+        onClickClear()
+        break
+      case 'DEL':
+        onClickDelete()
+        break
+      case 'HIST':
+        onClickHist()
+        break
+      case '=':
+        onClickEqual(eq)
+        break
+      default:
+        onClickChar(char)
+        break
+    }
+  }
+  console.log(calcHist)
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.resultSection}>
-        <Text style={styles.font}>{equation}</Text>
+      <Modal
+        animationType='slide'
+        transparent
+        visible={openHistModal}
+        onRequestClose={() => {
+          setOpenHistModal(!openHistModal)
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={{ ...FONT.h4, fontSize: 25, fontWeight: '600', color: COLOR.white }}>History</Text>
+            {calcHist.map((hist) =>
+              <Text style={styles.fontModal} key={hist.id}>{hist.equation}</Text>)}
+            <TouchableOpacity
+              style={{ ...styles.button, backgroundColor: COLOR.red }}
+              onPress={() => onClickClearHistory()}
+            >
+              <Text style={styles.fontModal}>Clear History</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setOpenHistModal(!openHistModal)}
+            >
+              <Text style={styles.fontModal}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <View style={styles.equationSection}>
+        {result === null ? <Text style={styles.fontDefault}>{equation}</Text> : <Text style={styles.fontDefault}>{result}</Text>}
       </View>
       <View style={styles.numberSection}>
         {characters.map((char) =>
-          <CharacterButton character={char} key={char} onPress={(e) => setEquation(e)} />)}
+          <CharacterButton character={char} key={char} onPress={(char) => checkSwitch(char)} />)}
       </View>
     </SafeAreaView>
   )
@@ -58,7 +110,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: COLOR.moreDark
+    backgroundColor: COLOR.moreDark,
+    justifyContent: 'center'
+  },
+  equationSection: {
+    backgroundColor: COLOR.moreDark,
+    flex: 1,
+    width: WIDTH,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    padding: WIDTH * 0.05
   },
   resultSection: {
     backgroundColor: COLOR.moreDark,
@@ -80,9 +141,44 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
-  font: {
+  fontDefault: {
     ...FONT.h0,
     color: COLOR.white
+  },
+  fontEquation: {
+    ...FONT.h1,
+    color: COLOR.white
+  },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: WIDTH * 0.5,
+    height: HEIGHT * 0.055,
+    borderRadius: WIDTH * 0.02,
+    marginTop: HEIGHT * 0.01,
+    backgroundColor: COLOR.lightDark
+  },
+  fontModal: {
+    ...FONT.body3,
+    color: COLOR.white
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
 
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: COLOR.moreDark,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center'
+  },
+  lineDivider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLOR.black,
+    marginVertical: HEIGHT * 0.01
   }
 })
