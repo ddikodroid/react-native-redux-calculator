@@ -5,12 +5,15 @@ import { COLOR } from '../styles/Color'
 import { FONT, WIDTH } from '../styles/Dimension'
 
 const CharacterButton = ({ character, keys, onPress }) => {
+  const onClick = () => {
+    onPress(character)
+  }
   return (
     <TouchableOpacity
       key={keys}
-      disabled={character === ' ' ? true : null}
+      // disabled={character === ' ' ? true : null}
       style={styles.buttonContainer}
-      onPress={onPress}
+      onPress={onClick}
     >
       <Text
         style={{ ...FONT.h1, color: (typeof (character) === 'string' ? COLOR.teal : COLOR.white) }}
