@@ -1,19 +1,10 @@
 import React from 'react'
-import { StyleSheet, Text, SafeAreaView } from 'react-native'
+import MainScreen from './src/screens/MainScreen'
 
 const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>Calculator</Text>
-    </SafeAreaView>
+    <MainScreen />
   )
 }
 
 export default App
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center'
-  }
-})
