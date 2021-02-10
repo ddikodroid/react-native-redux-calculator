@@ -32,7 +32,8 @@ export const FONT = {
   },
   h1: {
     fontSize: SIZE.xl,
-    lineHeight: SIZE.xl + 6
+    lineHeight: SIZE.xl + 6,
+    fontWeight: '600'
   },
   h2: {
     fontSize: SIZE.l,
