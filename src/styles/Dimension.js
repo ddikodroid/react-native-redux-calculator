@@ -27,7 +27,7 @@ export const SIZE = {
 export const FONT = {
   h0: {
     fontSize: SIZE.xxl,
-    lineHeight: SIZE.xxl,
+    lineHeight: SIZE.xxl + 10,
     fontWeight: '600'
   },
   h1: {
