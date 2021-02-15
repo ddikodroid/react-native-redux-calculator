@@ -1,15 +1,11 @@
 import { ADD_HIST, CLEAR_HIST } from './historyTypes'
-
-let nextId = 2
-
-export const addHistory = (equation) => ({
+let nextId = 0
+export const addHistory = (data) => ({
   type: ADD_HIST,
-  data: {
+  payload: {
     id: nextId++,
-    equation: equation
+    equation: data
   }
 })
 
-export const clearHistory = () => ({
-  type: CLEAR_HIST
-})
+export const clearHistory = () => ({ type: CLEAR_HIST })

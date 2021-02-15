@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Text, SafeAreaView, Alert, View, StyleSheet, Modal, TouchableOpacity, FlatList } from 'react-native'
+import { Text, SafeAreaView, View, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 import CharacterButton from '../components/CharacterButton'
 import { evaluate } from 'mathjs'
 import { COLOR } from '../styles/Color'
@@ -27,8 +27,6 @@ const MainScreen = () => {
     setResult(String(evaluate(equation)))
     const res = `${equation}=${evaluate(equation)}`
     dispatch((addHistory(res)))
-    Alert.alert(res)
-    // Alert.alert(`${equation}=${evaluate(equation)}`)
   }
   const onClickDelete = () => {
     setEquation(equation.slice(0, -1))
@@ -76,14 +74,16 @@ const MainScreen = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={{ ...FONT.h4, fontSize: 25, fontWeight: '600', color: COLOR.white }}>History</Text>
-            {calcHist.map((hist) =>
-              <Text style={styles.fontModal} key={hist.id}>{hist.equation}</Text>)}
-            <TouchableOpacity
+            {calcHist === null
+              ? <Text>No History</Text>
+              : calcHist.map((hist) =>
+                <Text style={styles.fontModal} key={hist.id}>{hist.equation}</Text>)}
+            {/* <TouchableOpacity
               style={{ ...styles.button, backgroundColor: COLOR.red }}
               onPress={() => onClickClearHistory()}
             >
               <Text style={styles.fontModal}>Clear History</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.button}
               onPress={() => setOpenHistModal(!openHistModal)}
@@ -104,8 +104,13 @@ const MainScreen = () => {
   )
 }
 
+// const mapStateToProps = ({ equation, result }) => ({ equation, result })
+// const mapDispatchToProps = dispatch => ({
+//   add: payload => dispatch(actions.addHistory(payload)),
+//   clear: () => dispatch(actions.clearHistory())
+// })
+// export default connect(mapStateToProps, mapDispatchToProps)(MainScreen)
 export default MainScreen
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

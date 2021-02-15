@@ -5,6 +5,6 @@ const rootReducer = combineReducers({
   historyReducer: historyReducer
 })
 
-const store = () => createStore(rootReducer)
+const configureStore = () => createStore(rootReducer)
 
-export default store
+export default configureStore

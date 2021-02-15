@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { COLOR } from '../styles/Color'
 import { FONT, WIDTH } from '../styles/Dimension'
 
@@ -11,12 +11,12 @@ const CharacterButton = ({ character, keys, onPress }) => {
   return (
     <TouchableOpacity
       key={keys}
-      // disabled={character === ' ' ? true : null}
+      disabled={character === ' ' || character === '' ? true : null}
       style={styles.buttonContainer}
       onPress={onClick}
     >
       <Text
-        style={{ ...FONT.h1, color: (typeof (character) === 'string' ? COLOR.teal : COLOR.white) }}
+        style={[FONT.h1, { color: typeof (character) === 'number' ? COLOR.white : (character === '00' || character === '000' ? COLOR.white : (character === 'AC' || character === 'DEL' ? COLOR.red : COLOR.teal)) }]}
       >
         {character}
       </Text>
