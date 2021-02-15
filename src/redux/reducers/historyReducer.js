@@ -1,27 +1,20 @@
-import { ADD_HIST, CLEAR_HIST } from '../actions/historyAction'
+import { ADD_HIST, CLEAR_HIST } from '../actions/historyTypes'
 
 const initialState = {
-  calculatorHist: [{
-    id: 0,
-    equation: '3*4=13'
-  },
-  {
-    id: 1,
-    equation: '9*13=58'
-  }]
+  calculatorHist: [{ equation: '1+2=3', id: 0 }]
 }
 
 const historyReducer = (state = initialState, action) => {
+  console.log(CLEAR_HIST)
   switch (action.type) {
     case ADD_HIST:
-      console.log(state.calculatorHist)
       return {
         ...state,
-        calculatorHist: [...state.calculatorHist, action.data]
+        calculatorHist: state.calculatorHist.concat(action.payload)
       }
     case CLEAR_HIST:
       return {
-        initialState
+        state
       }
     default:
       return state
